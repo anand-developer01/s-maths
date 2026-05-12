@@ -9,7 +9,7 @@ const THEMES = {
 };
 
 const Asmd = () => {
-  const [level, setLevel] = useState(1);
+  const [level, _setLevel] = useState(1);
   const [operation, setOperation] = useState<keyof typeof THEMES>('+');
   const [currentTest, setCurrentTest] = useState(1);
   const [score, setScore] = useState(0);

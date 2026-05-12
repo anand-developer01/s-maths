@@ -1,7 +1,9 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 
-const GAP_TENS = 60;
-const GAP_ONES = 15;
+interface Point {
+  x: number;
+  y: number;
+}
 
 const LineMultiplicationGame = () => {
   const [a, setA] = useState(12);
@@ -13,83 +15,154 @@ const LineMultiplicationGame = () => {
   const bTens = Math.floor(b / 10);
   const bOnes = b % 10;
 
+  // FIXED BOARD SIZE (RESPONSIVE FRIENDLY)
+  const width = 600;
+  const height = 400;
+
+  // 🔥 INTERSECTION DETECTION
+  const getIntersection = (p1: Point, p2: Point, p3: Point, p4: Point) => {
+    const denom =
+      (p1.x - p2.x) * (p3.y - p4.y) - (p1.y - p2.y) * (p3.x - p4.x);
+
+    if (denom === 0) return null;
+
+    const t =
+      ((p1.x - p3.x) * (p3.y - p4.y) - (p1.y - p3.y) * (p3.x - p4.x)) /
+      denom;
+
+    const u =
+      -((p1.x - p2.x) * (p1.y - p3.y) - (p1.y - p2.y) * (p1.x - p3.x)) /
+      denom;
+
+    if (t >= 0 && t <= 1 && u >= 0 && u <= 1) {
+      return {
+        x: p1.x + t * (p2.x - p1.x),
+        y: p1.y + t * (p2.y - p1.y),
+      };
+    }
+
+    return null;
+  };
+
+  // 🔥 BUILD ALL LINES (NORMALIZED SAME SIZE)
+  const verticalLines = useMemo(() => {
+    const lines: any[] = [];
+
+    // A vertical full lines (same size)
+    for (let i = 0; i < aTens * 10 + aOnes; i++) {
+      const x = 80 + i * 8;
+
+      lines.push({
+        x1: x,
+        y1: 40,
+        x2: x,
+        y2: height - 40,
+        type: "V",
+      });
+    }
+
+    return lines;
+  }, [a]);
+
+  const horizontalLines = useMemo(() => {
+    const lines: any[] = [];
+
+    for (let i = 0; i < bTens * 10 + bOnes; i++) {
+      const y = 60 + i * 8;
+
+      lines.push({
+        x1: 40,
+        y1: y,
+        x2: width - 40,
+        y2: y,
+        type: "H",
+      });
+    }
+
+    return lines;
+  }, [b]);
+
+  // 🔥 COMPUTE CROSSING POINTS
+  const intersections = useMemo(() => {
+    const points: Point[] = [];
+
+    verticalLines.forEach(v => {
+      horizontalLines.forEach(h => {
+        const p = getIntersection(
+          { x: v.x1, y: v.y1 },
+          { x: v.x2, y: v.y2 },
+          { x: h.x1, y: h.y1 },
+          { x: h.x2, y: h.y2 }
+        );
+
+        if (p) points.push(p);
+      });
+    });
+
+    return points;
+  }, [verticalLines, horizontalLines]);
+
   return (
     <div style={styles.container}>
-      <h2>🧮 Spaced Line Multiplication</h2>
+      <h2 style={styles.title}>🧮 Spaced Line Multiplication</h2>
 
+      {/* INPUTS */}
       <div style={styles.inputs}>
         <input value={a} onChange={(e) => setA(Number(e.target.value))} />
-        <span>×</span>
+        <span style={{ fontSize: 22 }}>×</span>
         <input value={b} onChange={(e) => setB(Number(e.target.value))} />
       </div>
 
-      <svg width="600" height="400" style={styles.board}>
-        
-        {/* ================= VERTICAL LINES (A) ================= */}
-        
-        {/* Tens group */}
-        {Array.from({ length: aTens }).map((_, i) =>
-          Array.from({ length: 10 }).map((_, j) => (
+      {/* BOARD */}
+      <div style={styles.card}>
+        <svg
+          viewBox={`0 0 ${width} ${height}`}
+          style={styles.svg}
+        >
+          {/* VERTICAL LINES */}
+          {verticalLines.map((l, i) => (
             <line
-              key={`vt-${i}-${j}`}
-              x1={80 + i * GAP_TENS + j * 2}
-              y1={40}
-              x2={80 + i * GAP_TENS + j * 2}
-              y2={360}
-              stroke="#1d4ed8"
-              strokeWidth="3"
+              key={i}
+              x1={l.x1}
+              y1={l.y1}
+              x2={l.x2}
+              y2={l.y2}
+              stroke="#3b82f6"
+              strokeWidth="2"
             />
-          ))
-        )}
+          ))}
 
-        {/* Ones group */}
-        {Array.from({ length: aOnes }).map((_, i) => (
-          <line
-            key={`vo-${i}`}
-            x1={aTens * GAP_TENS + 120 + i * GAP_ONES}
-            y1={40}
-            x2={aTens * GAP_TENS + 120 + i * GAP_ONES}
-            y2={360}
-            stroke="#60a5fa"
-            strokeWidth="2"
-          />
-        ))}
-
-        {/* ================= HORIZONTAL LINES (B) ================= */}
-
-        {/* Tens group */}
-        {Array.from({ length: bTens }).map((_, i) =>
-          Array.from({ length: 10 }).map((_, j) => (
+          {/* HORIZONTAL LINES */}
+          {horizontalLines.map((l, i) => (
             <line
-              key={`ht-${i}-${j}`}
-              x1={40}
-              y1={80 + i * GAP_TENS + j * 2}
-              x2={560}
-              y2={80 + i * GAP_TENS + j * 2}
-              stroke="#b91c1c"
-              strokeWidth="3"
+              key={i}
+              x1={l.x1}
+              y1={l.y1}
+              x2={l.x2}
+              y2={l.y2}
+              stroke="#ef4444"
+              strokeWidth="2"
             />
-          ))
-        )}
+          ))}
 
-        {/* Ones group */}
-        {Array.from({ length: bOnes }).map((_, i) => (
-          <line
-            key={`ho-${i}`}
-            x1={40}
-            y1={bTens * GAP_TENS + 120 + i * GAP_ONES}
-            x2={560}
-            y2={bTens * GAP_TENS + 120 + i * GAP_ONES}
-            stroke="#f87171"
-            strokeWidth="2"
-          />
-        ))}
-      </svg>
+          {/* 🔥 CROSSING POINTS */}
+          {intersections.map((p, i) => (
+            <circle
+              key={i}
+              cx={p.x}
+              cy={p.y}
+              r="3"
+              fill="#111827"
+            />
+          ))}
+        </svg>
+      </div>
 
-      <h3>Answer: {a * b}</h3>
+      {/* RESULT */}
+      <h3 style={styles.result}>Answer: {a * b}</h3>
 
       <p style={styles.note}>
-        🔵 Blue = vertical (A) | 🔴 Red = horizontal (B)
+        🔵 Blue = Vertical | 🔴 Red = Horizontal | ⚫ Black dots = Cross points
       </p>
     </div>
   );
@@ -98,24 +171,47 @@ const LineMultiplicationGame = () => {
 const styles: any = {
   container: {
     textAlign: "center",
-    fontFamily: "sans-serif",
+    fontFamily: "Arial",
+    padding: 10,
+    background: "#f8fafc",
   },
+
+  title: {
+    color: "#0f172a",
+    fontSize: 24,
+  },
+
   inputs: {
     display: "flex",
     justifyContent: "center",
-    gap: "10px",
-    fontSize: "20px",
-    marginBottom: "15px",
+    gap: 10,
+    marginBottom: 15,
   },
-  board: {
-    border: "2px solid #ddd",
-    borderRadius: "12px",
+
+  card: {
     background: "#fff",
-    margin: "auto",
+    borderRadius: 16,
+    padding: 10,
+    boxShadow: "0 8px 20px rgba(0,0,0,0.1)",
+    maxWidth: "100%",
+    overflowX: "auto",
   },
+
+  svg: {
+    width: "100%",
+    height: "auto",
+  },
+
+  result: {
+    marginTop: 15,
+    fontSize: 26,
+    color: "#16a34a",
+    fontWeight: "bold",
+  },
+
   note: {
-    marginTop: "10px",
-    color: "#555",
+    marginTop: 10,
+    color: "#6b7280",
   },
 };
 
