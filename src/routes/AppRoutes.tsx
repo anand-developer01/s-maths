@@ -3,9 +3,9 @@ import { createHashRouter } from "react-router-dom";
 import MainLayout from "../layouts/MainLayout";
 import Home from "../pages/Home";
 import NotFound from "../pages/NotFound";
-import LineMultiplication from "../components/line-multiplication/LineMultiplication";
+import ColorsLearning from "../components/colors/colorsLearning";
 import Asmd from "../components/math/asmd/Asmd";
-import LineMathPractice from "../components/line-multiplication/LineMathPractice";
+import NumberLearning from "../components/math/number/Numbers";
 import AZGrid from "../components/alphabet/AZGrid";
 
 export const router = createHashRouter([
@@ -18,8 +18,8 @@ export const router = createHashRouter([
                 element: <Home />,
             },
             {
-                path: "line-multiplication",
-                element: <LineMultiplication />,
+                path: "colors-learning",
+                element: <ColorsLearning />,
             },
             {
                 path: "asmd-game",
@@ -30,8 +30,8 @@ export const router = createHashRouter([
                 element: <AZGrid />,
             },
             {
-                path: "line-math-practice",
-                element: <LineMathPractice />,
+                path: "number-learning",
+                element: <NumberLearning />,
             },
         ],
     },
