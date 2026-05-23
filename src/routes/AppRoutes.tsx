@@ -14,8 +14,8 @@ import Register from "../components/kid/Register";
 import AtoZBubbleGame from '../components/alphabet/AtoZBubbleGame';
 import AlphabetPhonicsQuiz from '../components/alphabet/AlphabetPhonicsQuiz'
 import PhonicsTypingQuiz from '../components/alphabet/PhonicsTypingQuiz'
-import ArrowMazeGame from "../components/line-drawing-larning/ArrowGame";
-import LineLearningGame from "../components/line-drawing-larning/LineLearningPractice";
+import ArrowMazeGame from "../components/line-drawing-earning/ArrowGame";
+import LineLearningGame from "../components/line-drawing-earning/LineLearningPractice";
 
 export const router = createHashRouter([
     {
