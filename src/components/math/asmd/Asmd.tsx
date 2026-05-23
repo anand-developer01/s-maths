@@ -1,6 +1,6 @@
-import React, { useState, useEffect, useCallback } from 'react';
-
-// Configuration for colors and styles
+import React, { useState, useEffect, useCallback, useContext } from 'react';
+import  { ScoreBoardContext } from '../../context/ScoreBoardContext'
+ // Configuration for colors and styles
 const THEMES = {
   '+': { bg: '#FEF9C3', accent: '#FACC15', text: '#A16207', shadow: '#CA8A04', icon: '➕' },
   '-': { bg: '#DBEAFE', accent: '#60A5FA', text: '#1E40AF', shadow: '#2563EB', icon: '➖' },
@@ -19,6 +19,9 @@ const Asmd = () => {
   const [isShaking, setIsShaking] = useState(false); // For wrong answers
 
   const theme = THEMES[operation];
+
+  const { kidData, updateScore }  = useContext(ScoreBoardContext)
+  console.log(kidData)
 
   const generateProblem = useCallback(() => {
     const ranges = [{min:1, max:5}, {min:5, max:20}, {min:10, max:100}, {min:50, max:500}];
@@ -55,6 +58,18 @@ const Asmd = () => {
       setUserInput('');
       generateProblem();
     } else {
+      if(score){
+        let kidData = {
+            id:1,
+            kidName:'srihas',
+            alphabetScore: 0,
+            numbersScore: 0,
+            mathScore: score,
+            puzzleScore: 0,
+            level : 0
+          }
+      updateScore(kidData)
+      }
       setIsGameOver(true);
     }
   };
@@ -108,7 +123,7 @@ const Asmd = () => {
                 backgroundColor: operation === op ? THEMES[op as keyof typeof THEMES].accent : '#f5f5f5',
                 transform: operation === op ? 'scale(1.1) translateY(-5px)' : 'none',
                 boxShadow: operation === op ? `0 8px 0 ${THEMES[op as keyof typeof THEMES].shadow}` : 'none',
-                transition: 'all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275)'
+                transition: 'all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275)',
               }}
             >
               {THEMES[op as keyof typeof THEMES].icon}
@@ -142,7 +157,8 @@ const Asmd = () => {
                   border: `5px solid ${isShaking ? '#ef4444' : theme.bg}`,
                   outline: 'none',
                   backgroundColor: '#f9f9f9',
-                  transition: 'border 0.3s'
+                  transition: 'border 0.3s',
+                  color:'#000'
                 }}
               />
               <button 

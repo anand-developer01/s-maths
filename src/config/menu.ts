@@ -29,4 +29,23 @@ export const MENU = [
     icon: "🔤",
     color: "#FFE4E6",
   },
+  {
+    path: "/hand-writing",
+    label: "Hand Writing",
+    icon: "✍️",
+    color: "#FFE4E6",
+  },
+  {
+    path: "/drawing",
+    label: "Drawing App",
+    icon: "🎨",
+    color: "#FFE4E6",
+  },
+  {
+    path: "/Arrow-Game",
+    label: "line-drawing-larning",
+    icon: "🎨",
+    color: "#FFE4E6",
+  },
+
 ];

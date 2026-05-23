@@ -1,55 +1,44 @@
 import { Outlet } from "react-router-dom";
 import SideMenu from "../components/header/SideMenu";
-import BottomNav from "../components/header/BottomNav";
+import Header from "../components/header/Header";
 import { useEffect, useState } from "react";
 
 const MainLayout = () => {
+  const [collapsed, setCollapsed] = useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
 
-  // ✅ NEW: sidebar state
-  const [collapsed, setCollapsed] = useState(false);
-
   useEffect(() => {
-    const check = () => {
-      const w = window.innerWidth;
-      setIsMobile(w <= 1024);
-    };
-
+    const check = () => setIsMobile(window.innerWidth < 1024);
     check();
     window.addEventListener("resize", check);
     return () => window.removeEventListener("resize", check);
   }, []);
 
-  // 📌 dynamic width
-  const sidebarWidth = isMobile ? 0 : collapsed ? 80 : 280;
-
   return (
     <div>
-      {/* Desktop Sidebar */}
-      {!isMobile && (
-        <SideMenu
-          open={true}
-          collapsed={collapsed}
-          setCollapsed={setCollapsed}
-        />
-      )}
+      {/* PASS STATE TO HEADER */}
+      <Header
+        isOpen={mobileOpen}
+        onMenuClick={() => setMobileOpen((p) => !p)}
+      />
 
-      {/* MAIN CONTENT */}
+      <SideMenu
+        collapsed={collapsed}
+        setCollapsed={setCollapsed}
+        mobileOpen={mobileOpen}
+        setMobileOpen={setMobileOpen}
+      />
+
       <div
         style={{
-          marginLeft: `${sidebarWidth}px`,
-          paddingBottom: isMobile ? "80px" : 0,
+          marginLeft: isMobile ? 0 : collapsed ? 80 : 280,
           transition: "margin-left 0.3s ease",
-          minHeight: "100vh",
         }}
       >
         <Outlet />
       </div>
-
-      {/* Mobile Bottom Nav */}
-      {isMobile && <BottomNav />}
     </div>
   );
 };
-
 export default MainLayout;

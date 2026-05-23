@@ -1,5 +1,6 @@
 import { useNavigate } from "react-router-dom";
-
+import  { ScoreBoardContext } from '../components/context/ScoreBoardContext'
+import { useContext } from "react";
 const CARDS = [
   {
     title: "🔤 Alphabet",
@@ -54,7 +55,7 @@ const SCORES = [
 
 const Home = () => {
   const navigate = useNavigate();
-
+const { kidData }  = useContext(ScoreBoardContext)
   return (
     <div style={styles.container}>
       <h1 style={styles.title}>🎓 Kids Learning Dashboard</h1>
@@ -100,6 +101,9 @@ const Home = () => {
       </div>
 
       {/* FOOTER BANNER */}
+      <div>
+        { JSON.stringify(kidData) }
+      </div>
       <div style={styles.footer}>
         🌟 Keep Learning Every Day 🌟
       </div>

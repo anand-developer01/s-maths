@@ -1,4 +1,5 @@
 import { useState } from "react";
+import AtoZHeader from  './AtoZHeader'
 
 const COLORS = [
     "#FEF9C3", "#DBEAFE", "#F3E8FF", "#DCFCE7",
@@ -44,6 +45,7 @@ const AZGrid = () => {
 
     return (
         <div style={styles.container}>
+            <AtoZHeader />
             <h1 style={styles.title}>🔤 A to Z Learning Board</h1>
 
             <p style={styles.subtitle}>
@@ -137,7 +139,7 @@ const styles: any = {
     },
 
     title: {
-        fontSize: "2.5rem",
+        fontSize: "1.5rem",
         marginBottom: 10,
         color: "#0f172a",
     },

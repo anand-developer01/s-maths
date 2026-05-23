@@ -1,36 +1,84 @@
-import { useState } from "react";
 import { NavLink } from "react-router-dom";
 
-const Header = () => {
-  const [menuOpen, setMenuOpen] = useState(false);
-
+const Header = ({
+  isOpen,
+  onMenuClick,
+}: {
+  isOpen: boolean;
+  onMenuClick: () => void;
+}) => {
   return (
-    <header style={styles.header}>
-      <div style={styles.logo}>🧠 MathKids</div>
+    <header
+      style={{
+        height: 60,
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "space-between",
+        padding: "0 15px",
+        background: "#4f46e5",
+        color: "#fff",
+        position: "sticky",
+        top: 0,
+        zIndex: 2000,
+      }}
+    >
+      {/* Logo */}
+      <b style={{ fontSize: 22 }}>🧠 MathKids</b>
 
-      <button
-        style={styles.menuBtn}
-        onClick={() => setMenuOpen(!menuOpen)}
+      {/* Navigation */}
+      <nav
+        style={{
+          display: "flex",
+          alignItems: "center",
+          gap: 7,
+        }}
       >
-        {menuOpen ? "✖" : "☰"}
-      </button>
+        <NavItem to="/" label="🏠 Home" />
 
-      <nav style={{ ...styles.nav, display: menuOpen ? "flex" : "flex" }}>
-        <NavItem to="/" label="Home" />
-        <NavItem to="/learn" label="Learn" />
-        <NavItem to="/practice" label="Practice" />
+        <NavItem
+          to="/register"
+          label="📝 Register"
+        />
+
+        <NavItem
+          to="/login"
+          label="🔐 Login"
+        />
+
+        {/* Mobile Menu Button */}
+        <button
+          onClick={onMenuClick}
+          style={{
+            fontSize: 24,
+            background: "transparent",
+            border: "none",
+            color: "#fff",
+            cursor: "pointer",
+          }}
+        >
+          {isOpen ? "✖" : "☰"}
+        </button>
       </nav>
     </header>
   );
 };
 
-const NavItem = ({ to, label }: { to: string; label: string }) => {
+const NavItem = ({
+  to,
+  label,
+}: {
+  to: string;
+  label: string;
+}) => {
   return (
     <NavLink
       to={to}
       style={({ isActive }) => ({
         ...styles.link,
-        background: isActive ? "#ffcc00" : "transparent",
+        background: isActive
+          ? "#ffcc00"
+          : "transparent",
+        color: isActive ? "#000" : "#fff",
         borderRadius: "8px",
       })}
     >
@@ -40,32 +88,11 @@ const NavItem = ({ to, label }: { to: string; label: string }) => {
 };
 
 const styles: any = {
-  header: {
-    display: "flex",
-    justifyContent: "space-between",
-    alignItems: "center",
-    padding: "12px 20px",
-    background: "#4f46e5",
-    color: "white",
-  },
-  logo: {
-    fontSize: "20px",
-    fontWeight: "bold",
-  },
-  nav: {
-    gap: "15px",
-  },
   link: {
-    color: "white",
     textDecoration: "none",
-    padding: "8px 12px",
-  },
-  menuBtn: {
-    background: "transparent",
-    border: "none",
-    fontSize: "22px",
-    color: "white",
-    display: "none",
+    padding: "8px 14px",
+    fontWeight: "bold",
+    transition: "0.3s",
   },
 };
 

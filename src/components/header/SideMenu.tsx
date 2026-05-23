@@ -1,54 +1,140 @@
 import { Link, useLocation } from "react-router-dom";
+import { useEffect, useState } from "react";
 import { MENU } from "../../config/menu";
 
-
 type Props = {
-  open?: boolean;
   collapsed: boolean;
   setCollapsed: (v: boolean) => void;
+
+  // NEW (mobile control)
+  mobileOpen?: boolean;
+  setMobileOpen?: (v: boolean) => void;
 };
 
-const SideMenu = ({ collapsed, setCollapsed }: Props) => {
-  const location = useLocation();
+const HEADER_HEIGHT = 60;
 
+const SideMenu = ({
+  collapsed,
+  setCollapsed,
+  mobileOpen,
+  setMobileOpen,
+}: Props) => {
+  const location = useLocation();
+  const [isMobile, setIsMobile] = useState(false);
+
+  // detect screen
+  useEffect(() => {
+    const check = () => setIsMobile(window.innerWidth < 1024);
+    check();
+    window.addEventListener("resize", check);
+    return () => window.removeEventListener("resize", check);
+  }, []);
+
+  const closeMobile = () => setMobileOpen?.(false);
+
+  // ================= MOBILE / TABLET =================
+  if (isMobile) {
+    return (
+      <>
+        {/* BACKDROP */}
+        {mobileOpen && (
+          <div
+            onClick={closeMobile}
+            style={{
+              position: "fixed",
+              top: HEADER_HEIGHT,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              background: "rgba(0,0,0,0.4)",
+              zIndex: 999,
+            }}
+          />
+        )}
+
+        {/* DRAWER (BELOW HEADER) */}
+        <div
+          style={{
+            position: "fixed",
+            top: HEADER_HEIGHT,
+            left: 0,
+            transform: mobileOpen ? "translateX(0)" : "translateX(-280px)",
+            height: `calc(100vh - ${HEADER_HEIGHT}px)`,
+            width: 280,
+            background: "linear-gradient(180deg,#fff,#f8fafc)",
+            transition: "transform 0.3s ease",
+            zIndex: 1000,
+            boxShadow: "10px 0 30px rgba(0,0,0,0.2)",
+            display: "flex",
+            flexDirection: "column",
+            willChange: "transform",
+          }}
+        >
+          {/* MENU */}
+          <div style={{ padding: 10 }}>
+            {MENU.map((item) => {
+              const active = location.pathname === item.path;
+
+              return (
+                <Link
+                  key={item.path}
+                  to={item.path}
+                  onClick={closeMobile}
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 12,
+                    padding: 12,
+                    marginBottom: 10,
+                    borderRadius: 12,
+                    textDecoration: "none",
+                    background: active ? item.color : "#fff",
+                    color: "#111827",
+                    fontWeight: 600,
+                    boxShadow: active
+                      ? "0 6px 0 rgba(0,0,0,0.15)"
+                      : "0 2px 5px rgba(0,0,0,0.05)",
+                  }}
+                >
+                  <span style={{ fontSize: 20 }}>{item.icon}</span>
+                  <span>{item.label}</span>
+                </Link>
+              );
+            })}
+          </div>
+        </div>
+      </>
+    );
+  }
+
+  // ================= DESKTOP =================
   return (
     <div
       style={{
         position: "fixed",
-        top: 0,
+        top: HEADER_HEIGHT,
         left: 0,
         height: "100vh",
-
-        // ✅ responsive width
-        width: collapsed ? "80px" : "280px",
-
+        width: collapsed ? 80 : 280,
         transition: "all 0.3s ease",
-        zIndex: 9999,
-
-        background: "linear-gradient(180deg, #ffffff, #f8fafc)",
+        background: "linear-gradient(180deg,#fff,#f8fafc)",
         boxShadow: "10px 0 30px rgba(0,0,0,0.15)",
-
         display: "flex",
         flexDirection: "column",
+        zIndex: 9999,
       }}
     >
       {/* HEADER */}
       <div
         style={{
-          padding: "15px",
+          padding: 15,
           display: "flex",
           justifyContent: collapsed ? "center" : "space-between",
-          alignItems: "center",
           borderBottom: "1px solid #e5e7eb",
         }}
       >
-        {!collapsed && (
-          <div style={{ fontWeight: "bold", fontSize: "18px" }}>
-            🎒 Kids App
-          </div>
-        )}
+        {!collapsed && <b>🎒 Kids App</b>}
 
-        {/* TOGGLE BUTTON */}
         <button
           onClick={() => setCollapsed(!collapsed)}
           style={{
@@ -58,15 +144,14 @@ const SideMenu = ({ collapsed, setCollapsed }: Props) => {
             borderRadius: 8,
             padding: "6px 10px",
             cursor: "pointer",
-            fontSize: "12px",
           }}
         >
           {collapsed ? "➡️" : "⬅️"}
         </button>
       </div>
 
-      {/* MENU ITEMS */}
-      <div style={{ padding: "10px", flex: 1 }}>
+      {/* MENU */}
+      <div style={{ padding: 10, flex: 1 }}>
         {MENU.map((item) => {
           const active = location.pathname === item.path;
 
@@ -79,29 +164,17 @@ const SideMenu = ({ collapsed, setCollapsed }: Props) => {
                 alignItems: "center",
                 justifyContent: collapsed ? "center" : "flex-start",
                 gap: collapsed ? 0 : 12,
-
-                padding: "12px",
+                padding: 12,
                 marginBottom: 10,
                 borderRadius: 12,
                 textDecoration: "none",
-
                 background: active ? item.color : "#fff",
                 color: "#111827",
                 fontWeight: 600,
-
-                boxShadow: active
-                  ? "0 6px 0 rgba(0,0,0,0.15)"
-                  : "0 2px 5px rgba(0,0,0,0.05)",
-
-                transition: "all 0.2s ease",
               }}
             >
               <span style={{ fontSize: 20 }}>{item.icon}</span>
-
-              {/* LABEL ONLY WHEN EXPANDED */}
-              {!collapsed && (
-                <span style={{ fontSize: 14 }}>{item.label}</span>
-              )}
+              {!collapsed && <span>{item.label}</span>}
             </Link>
           );
         })}
