@@ -205,6 +205,7 @@ const styles: any = {
     border: "3px solid #93C5FD",
     borderRadius: 20,
     touchAction: "none",
+    width: '100%',
   },
 
   message: {

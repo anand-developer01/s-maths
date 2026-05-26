@@ -16,6 +16,8 @@ import AlphabetPhonicsQuiz from '../components/alphabet/AlphabetPhonicsQuiz'
 import PhonicsTypingQuiz from '../components/alphabet/PhonicsTypingQuiz'
 import ArrowMazeGame from "../components/line-drawing-earning/ArrowGame";
 import LineLearningGame from "../components/line-drawing-earning/LineLearningPractice";
+import KidMilestoneTracker from "../components/milestone/KidMilestoneTracker";
+import KidMilestoneBoard from "../components/milestone/KidMilestoneBoard";
 
 export const router = createHashRouter([
     {
@@ -78,8 +80,15 @@ export const router = createHashRouter([
                 path: "Line-Learning",
                 element: <LineLearningGame />,
             },
-
-
+            {
+                path: "Kid-Milestone-Tracker",
+                element: <KidMilestoneTracker />,
+            },
+            {
+                path: "Kid-Milestone-Board",
+                element: <KidMilestoneBoard />,
+            },
+            
         ],
     },
     {

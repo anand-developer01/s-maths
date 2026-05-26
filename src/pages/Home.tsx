@@ -102,7 +102,8 @@ const { kidData }  = useContext(ScoreBoardContext)
 
       {/* FOOTER BANNER */}
       <div>
-        { JSON.stringify(kidData) }
+        {/* { JSON.stringify(kidData) } */}
+        { kidData.mathScore }
       </div>
       <div style={styles.footer}>
         🌟 Keep Learning Every Day 🌟
